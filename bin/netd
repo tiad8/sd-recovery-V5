@@ -1,0 +1,12 @@
+#!/bin/sh
+
+modprobe ipt_MASQUERADE
+modprobe ipt_REJECT
+modprobe ipt_LOG
+modprobe xt_state
+modprobe xt_multiport
+modprobe xt_owner
+modprobe iptable_filter
+modprobe iptable_nat
+
+exec /system/bin/netd
