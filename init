@@ -257,15 +257,21 @@ if [ -d /data/dropbear/ ] ; then
 	/bin/dropbear -r /data/dropbear/dropbear_rsa_host_key -s
 fi
 
+# Make sure correct firmware is loaded for BCM wifi
+rm /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+if [ ! -z `uname -r | grep "2.6.27"` ]; then 
+	echo "You're on .27, copying old wifi firmware."
+	cp /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin.old /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+else
+echo "You're on .35+, copying new wifi firmware."
+	cp /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin.new /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+fi
+
 if [ "$WIFI_TI" = "1" ] || [ "$WIFI_BCM" = "1" ];then
-	if [ -e "$card/npkboot/modules-$(uname -r).tar.gz" ] && ! `strings /lib/modules/mac80211.ko 2>/dev/null | grep -q "vermagic=$(uname -r)"`; then
-		echo "Installing $card/npkboot/modules-$(uname -r).tar.gz"
+	        echo "Installing $card/npkboot/modules-$(uname -r).tar.gz"
                 rm -rf /lib/modules/*
 		tar xzf $card/npkboot/modules-$(uname -r).tar.gz -C /lib/modules
 		ln -s /lib/modules /lib/modules/`uname -r`
-	else
-		echo "Modules already unpacked for this kernel version -- skipping installation of $card/modules-$(uname -r).tar.gz"
-	fi
 
 	if [ -f /system/etc/wifi/wlan.ko ]; then
 	cp -R /system/etc/wifi/* /lib/modules/
