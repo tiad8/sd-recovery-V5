@@ -1,5 +1,0 @@
-#!/bin/sh
-
-/bin/mount -o remount,ro /data
-
-/bin/busybox shutdown

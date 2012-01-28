@@ -1,9 +1,0 @@
-#!/bin/sh
-
-modprobe ipt_MASQUERADE
-modprobe xt_state
-modprobe xt_multiport
-modprobe iptable_filter
-modprobe iptable_nat
-
-/system/bin/netd
