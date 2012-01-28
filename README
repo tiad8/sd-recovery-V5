@@ -11,6 +11,19 @@ if [ ! -d $card/npkboot/mp3 ] ; then
         echo You have no mp3 folder, please extract the resources to your SD card NPKBOOT/MP3 folder
 fi
 
+-added support for kexec feature to change kernel w/o rebooting. credit: detule
+
+code:
+# Make sure correct firmware is loaded for BCM wifi
+rm /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+if [ ! -z `uname -r | grep "2.6.27"` ]; then 
+	echo "You're on .27, copying old wifi firmware."
+	cp /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin.old /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+else
+echo "You're on .35+, copying new wifi firmware."
+	cp /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin.new /init.etc/wifi/bcm432x/bcm4325-rtecdc.bin
+fi
+
 -move user conf to system/etc/conf
 
 code:
