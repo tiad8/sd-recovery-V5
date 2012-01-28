@@ -1,0 +1,1 @@
+rel_path=thaidaiboot physkeyboard=blac lcd.density=240 msmvkeyb_toggle=off msm_blackstone_pad.vibrate=1 board-blackstone.is_gsm=0 force_cdma=0 acpuclock.oc_freq_khz=620000 gsensor_axis=-2,-1,3 msmsdcc_1bit msmsdcc_fmax=14000000 msmsdcc_nopwrsave androidboot.serialno=PWTMDL2APKO9

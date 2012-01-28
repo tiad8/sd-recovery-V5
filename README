@@ -1,0 +1,59 @@
+SD Recovery V5 2012.01.27
+
+2012.01.27
+
+-support froyo 2.2.2 & 2.2.3
+-support GB 2.3.7, CM7 2.3.7 
+-added support in init for mp3
+
+code:
+if [ ! -d $card/npkboot/mp3 ] ; then
+        echo You have no mp3 folder, please extract the resources to your SD card NPKBOOT/MP3 folder
+fi
+
+-move user conf to system/etc/conf
+
+code:
+if [ -f "$system/etc/conf/$RCCONFIG.user.conf" ]; then
+	/bin/userinit.sh -c "$system/etc/conf/$RCCONFIG.user.conf"
+else
+	echo "No user config files ($RCCONFIG) found on sdcard"
+fi
+
+-move keymaps to system/etc/keymaps
+
+code:
+KBD=`sed 's/.*physkeyboard=\([0-9a-z_]*\).*/\1/' /proc/cmdline`
+cp /system/etc/keymaps/default/*.kl /system/usr/keylayout/
+cp /system/etc/keymaps/default/*.kcm* /system/usr/keychars/
+if [ -d "/system/etc/keymaps/$KBD" ]
+then
+	cp /system/etc/keymaps/"$KBD"/*.kl /system/usr/keylayout/
+	cp /system/etc/keymaps/"$KBD"/*.kcm* /system/usr/keychars/
+fi
+
+-move ts-calibration to system/etc/calibration
+
+code:
+if [ -f /system/etc/calibration/ts-calibration ] ; then
+        echo "Using Saved Touchscreen Calibration"
+	echo 128,128,1903,128,128,1907,1903,1907,1024,1024 > $touchscreendir/calibration_screen
+        cat /system/etc/calibration/ts-calibration > $touchscreendir/calibration_points
+else
+        mkdir /dev/graphics
+        mknod /dev/graphics/fb0 c 29 0
+        clear
+        echo; echo; echo; echo; echo; echo; echo; echo "Calibrating Touchscreen:"
+        echo "Click the Five Targets in order -- Top Left, Top Right, Middle, Bottom Left, Bottom Right"
+	echo "(Tap lightly. The screen is quite sensitive.)"
+        tssc-calibrate
+        echo 0,0,0,0,0,0,0,0,0,0 | cmp -s $touchscreendir/calibration_points # determine if calibration is still null -- means failed calibration
+        if [ $? -eq 0 ] ; then
+                echo "Touchscreen Calibration Failed"
+        else
+                echo "Touchscreen Calibration Successful; Saving..."
+                cat $touchscreendir/calibration_points > /system/etc/calibration/ts-calibration
+        fi
+fi
+
+
